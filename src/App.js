@@ -3,7 +3,7 @@ import "./App.css";
 import Homepage from "./Pages/Homepage";
 import Login from "./Pages/Login";
 import "bootstrap/dist/css/bootstrap.css";
-import "bootstrap/dist/js/bootstrap.js";
+// import "bootstrap/dist/js/bootstrap.js";
 import { DataContextProvider } from "./Components/TheContext";
 import PrivateRoute from "./Components/PrivateRoute";
 
