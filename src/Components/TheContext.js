@@ -92,7 +92,7 @@ const DataContextProvider = ({ children }) => {
     if (token) {
       setIsAuthenticated(true);
     } else {
-      navigate("/login");
+      navigate("/");
     }
   }, [navigate]);
 
@@ -105,7 +105,7 @@ const DataContextProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
-    navigate("/login"); // Redirect to login page after logout
+    navigate("/"); // Redirect to login page after logout
   };
 
   const contextValue = {
