@@ -17,11 +17,12 @@ const Login = () => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   };
   const [isLoading] = useState(false);
-
+  console.log("fake auth service", fakeAuthService);
   // the working code for authentication from an api *****
   const handleLogin = (event) => {
     event.preventDefault();
     console.log(formData);
+    console.log("fake auth service", fakeAuthService);
 
     axios
 
