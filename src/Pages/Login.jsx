@@ -35,6 +35,7 @@ const Login = () => {
         navigate("/home");
 
         console.log("login success");
+        console.log("fake auth service", fakeAuthService);
       })
       .catch((error) => {
         console.log("error", error);
