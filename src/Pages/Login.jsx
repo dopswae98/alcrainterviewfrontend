@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { DataContext } from "../Components/TheContext";
 
@@ -33,7 +33,8 @@ const Login = () => {
         setFakeAuthService({ ...fakeAuthService, isAuthenticated: true });
 
         setFeedback(true);
-        navigate("/home");
+        navigate("/home", { overwriteLastHistoryEntry: true });
+        // redirect("/home");
 
         console.log("login success");
         console.log("fake auth service", fakeAuthService);
