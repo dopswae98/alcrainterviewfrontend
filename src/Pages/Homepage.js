@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+import React, { useState, useRef, useEffect, useContext, useMemo } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { DataContext } from "../Components/TheContext";
 import axios from "axios";
 import "font-awesome/css/font-awesome.min.css";
 
-// const [setAddmodal] = useState(false)
+//a function  to check onblur events for divs
 
 function useOutsideAlerter(ref) {
   const { setAddmodal, setTodoDetailsModal } = useContext(DataContext);
@@ -28,6 +28,8 @@ function useOutsideAlerter(ref) {
   }, [ref]);
 }
 
+//the main home component
+
 const Homepage = (props) => {
   const {
     addmodal,
@@ -36,12 +38,11 @@ const Homepage = (props) => {
     todoDetailsModal,
     fakeAuthService,
     setFakeAuthService,
-    auth,
+
     setAuth,
   } = useContext(DataContext);
   const [addFeedback, setAddFeedback] = useState(null);
   const [todoDetails, setTodoDetails] = useState({});
-  const [checkTodoDetails, setCheckTodoDetails] = useState({});
 
   const wrappperRef = useRef(null);
   useOutsideAlerter(wrappperRef);
@@ -56,9 +57,37 @@ const Homepage = (props) => {
   });
 
   const [todos, setTodos] = useState([]);
+
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [completed, setCompleted] = useState("");
+  const [checked, setChecked] = useState(false);
+
+  const handleChecked = (todo) => {
+    const todoIndex = todos.find((foundTodo) => foundTodo.id === todo.id);
+    console.log("todo-index", todoIndex);
+    if (todoIndex) {
+      if (todoIndex.completed === "completed") {
+        todoIndex.completed = "pending";
+
+        // setTodos([...todos]);
+      } else {
+        todoIndex.completed = "completed";
+      }
+      setTodos([...todos]);
+    }
+    console.log(todos);
+    api();
+    axios
+      .put(`http://127.0.0.1:8000/todos/${todo.id}/`, todoIndex)
+      .then((response) => {
+        api();
+        // console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   useEffect(() => {
     return () => {
@@ -96,10 +125,14 @@ const Homepage = (props) => {
   const api = () =>
     axios
       .get(`http://127.0.0.1:8000/todos/`)
-      .then((response) => {
-        setTodos(response.data);
-        console.log(response.data);
-      })
+      .then(
+        (response) => {
+          setTodos(response.data);
+        }
+
+        // console.log("response data", response.json())
+      )
+
       .catch((error) => {
         console.error(error);
       });
@@ -115,8 +148,7 @@ const Homepage = (props) => {
         console.log("formdata", formData);
         setAddFeedback(true);
         setFormData({ ...formData, title: "", description: "", datedue: "" });
-        // setAddedFeedback(true);
-        // setFormData(clearFormData);
+
         api();
       })
       .catch((error) => {
@@ -160,11 +192,32 @@ const Homepage = (props) => {
     console.log("todo", todo);
     setTodoDetails({ ...todo });
   };
+  const newTodos = [todos];
+  const [first, setFirst] = useState([1, 2, 2]);
+  console.log(
+    "a",
+    [].filter((a) => a)
+  );
+  console.log("type of first", typeof first);
+  console.log(
+    "type of first value",
+    todos.filter((fil) => fil.completed === "pending")
+  );
+  console.log("newTodos", newTodos);
+  console.log("type of newTodos", typeof newTodos);
+  const doneData = todos.filter(
+    (todoItem) => todoItem.completed === "completed"
+  );
+  const undoneData = todos.filter(
+    (todoItem) => todoItem.completed === "pending"
+  );
+  console.log("date", date);
 
-  const doneData = todos.filter((todo) => todo.completed === "completed");
-  const undoneData = todos.filter((todo) => todo.completed === "pending");
-  const dueTodayData = todos.filter((todo) => todo.datedue === date);
-  console.log("current", date);
+  const dueTodayData = useMemo(() => {
+    const dueTodayData = todos.filter((todoItem) => todoItem.datedue === date);
+    console.log("current", date);
+    return dueTodayData;
+  }, [todos]);
 
   const handleLogout = () => {
     fakeAuthService["isAuthenticated"] = false;
@@ -207,6 +260,8 @@ const Homepage = (props) => {
         api();
       });
   };
+
+  console.log("todos official", todos);
 
   return (
     <div className="position-relative">
@@ -411,9 +466,20 @@ const Homepage = (props) => {
                         value=""
                         id="flexCheckDefault"
                         // {completed === 'completed'? 'checked':null}
-                        checked={todo.completed === "completed" ? true : false}
-                        onChange={() => SetDone(todo)}
-                        onClick={() => SetDone(todo)}
+                        // checked={todo.completed === "completed" ? true : false}
+                        // onChange={() => SetDone(todo)}
+                        // onClick={() => SetDone(todo)}
+
+                        // checked={checked} working
+                        checked={
+                          todo.completed === "pending"
+                            ? false
+                            : todo.completed === "completed"
+                            ? true
+                            : false
+                        }
+                        // console.log('completed',todo.completed)
+                        onChange={() => handleChecked(todo)}
                       />
                     </div>
                     <p
@@ -457,8 +523,15 @@ const Homepage = (props) => {
                         value=""
                         id="flexCheckDefault"
                         // {completed === 'completed'? 'checked':null}
-                        checked={todo.completed === "completed" ? true : false}
-                        onChange={() => SetDone(todo)}
+                        checked={
+                          todo.completed === "pending"
+                            ? false
+                            : todo.completed === "completed"
+                            ? true
+                            : false
+                        }
+                        // console.log('completed',todo.completed)
+                        onChange={() => handleChecked(todo)}
                       />
                     </div>
                     <p
@@ -498,14 +571,18 @@ const Homepage = (props) => {
                   <div className="d-flex">
                     <div className="form-check">
                       <input
-                        className="form-check-input"
+                        className={"form-check-input"}
                         type="checkbox"
                         value=""
                         id="flexCheckDefault"
-                        // {completed === 'completed'? 'checked':null}
-                        checked={todo.completed === "completed" ? true : false}
-                        onChange={() => SetDone(todo)}
-                        onClick={() => setFormData({ formData, todo })}
+                        checked={
+                          todo.completed === "pending"
+                            ? false
+                            : todo.completed === "completed"
+                            ? true
+                            : false
+                        }
+                        onChange={() => handleChecked(todo)}
                       />
                     </div>
                     <p
