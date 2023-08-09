@@ -288,7 +288,9 @@ const Homepage = (props) => {
         </div>
       </div>
       <div className={addmodal ? "add_modal pt-5" : `d-none`}>
-        <p>Add Todo Items</p>
+        <p className="text-center h1 fw-bold text-danger bg-light mx-5 px-5 rounded">
+          Add Todo Items
+        </p>
         <div className="add_todo">
           <div className="row">
             <div
@@ -405,7 +407,10 @@ const Homepage = (props) => {
       <div className="addtodo mt-5 d-flex align-items-center justify-content-center">
         <button
           className="btn btn-outline-danger rounded-0 fw-bold"
-          onClick={() => setAddmodal(true)}
+          onClick={() => {
+            setAddmodal(true);
+            setAddFeedback(null);
+          }}
         >
           Add Todo
         </button>
