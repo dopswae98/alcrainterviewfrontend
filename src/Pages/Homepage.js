@@ -89,6 +89,7 @@ const Homepage = (props) => {
 
   useEffect(() => {
     api();
+
     return () => {
       getCurrentDateTime();
     };
@@ -182,6 +183,10 @@ const Homepage = (props) => {
   const newTodos = [todos];
   const [first, setFirst] = useState([1, 2, 2]);
 
+  const dueTodayData = todos.filter((todoItem) => todoItem.datedue === date);
+  console.log("todos", todos);
+  console.log("due today data", dueTodayData);
+
   const doneData = todos.filter(
     (todoItem) => todoItem.completed === "completed"
   );
@@ -189,10 +194,8 @@ const Homepage = (props) => {
     (todoItem) => todoItem.completed === "pending"
   );
 
-  // const dueTodayData = useMemo(() => {
-  const dueTodayData = todos.filter((todoItem) => todoItem.datedue === date);
-  console.log("todos", todos);
-  console.log("due today data", dueTodayData);
+  
+  
 
   const handleLogout = () => {
     fakeAuthService["isAuthenticated"] = false;
