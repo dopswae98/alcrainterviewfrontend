@@ -191,6 +191,7 @@ const Homepage = (props) => {
 
   // const dueTodayData = useMemo(() => {
   const dueTodayData = todos.filter((todoItem) => todoItem.datedue === date);
+  console.log("due today data", dueTodayData);
 
   const handleLogout = () => {
     fakeAuthService["isAuthenticated"] = false;
