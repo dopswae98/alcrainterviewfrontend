@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext, useMemo } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { DataContext } from "../Components/TheContext";
 import axios from "axios";
@@ -65,7 +65,7 @@ const Homepage = (props) => {
 
   const handleChecked = (todo) => {
     const todoIndex = todos.find((foundTodo) => foundTodo.id === todo.id);
-    console.log("todo-index", todoIndex);
+
     if (todoIndex) {
       if (todoIndex.completed === "completed") {
         todoIndex.completed = "pending";
@@ -76,13 +76,11 @@ const Homepage = (props) => {
       }
       setTodos([...todos]);
     }
-    console.log(todos);
-    api();
+
     axios
       .put(`http://127.0.0.1:8000/todos/${todo.id}/`, todoIndex)
       .then((response) => {
         api();
-        // console.log(response.data);
       })
       .catch((error) => {
         console.error(error);
@@ -125,13 +123,9 @@ const Homepage = (props) => {
   const api = () =>
     axios
       .get(`http://127.0.0.1:8000/todos/`)
-      .then(
-        (response) => {
-          setTodos(response.data);
-        }
-
-        // console.log("response data", response.json())
-      )
+      .then((response) => {
+        setTodos(response.data);
+      })
 
       .catch((error) => {
         console.error(error);
@@ -144,22 +138,18 @@ const Homepage = (props) => {
 
       .post("http://127.0.0.1:8000/todos/", formData)
       .then((response) => {
-        console.log(response);
-        console.log("formdata", formData);
         setAddFeedback(true);
         setFormData({ ...formData, title: "", description: "", datedue: "" });
 
         api();
       })
       .catch((error) => {
-        console.log(error);
         setAddFeedback(false);
       });
     api();
   };
 
   const deleteTodo = (id) => {
-    console.log(id);
     axios
       .delete(`http://127.0.0.1:8000/todos/${id}`, {
         method: "DELETE",
@@ -169,7 +159,6 @@ const Homepage = (props) => {
         },
       })
       .then((response) => {
-        console.log("response", response);
         api();
       })
       .catch((error) => {
@@ -179,7 +168,6 @@ const Homepage = (props) => {
 
   const handleStatus = (e) => {
     setCompleted(e.target.value);
-    console.log(completed);
   };
   const onClickOutsideListener = () => {
     setTodoDetailsModal(false);
@@ -189,79 +177,55 @@ const Homepage = (props) => {
   };
   const handleTodoDetails = (todo) => {
     setTodoDetailsModal(true);
-    console.log("todo", todo);
+
     setTodoDetails({ ...todo });
   };
   const newTodos = [todos];
   const [first, setFirst] = useState([1, 2, 2]);
-  console.log(
-    "a",
-    [].filter((a) => a)
-  );
-  console.log("type of first", typeof first);
-  console.log(
-    "type of first value",
-    todos.filter((fil) => fil.completed === "pending")
-  );
-  console.log("newTodos", newTodos);
-  console.log("type of newTodos", typeof newTodos);
+
   const doneData = todos.filter(
     (todoItem) => todoItem.completed === "completed"
   );
   const undoneData = todos.filter(
     (todoItem) => todoItem.completed === "pending"
   );
-  console.log("date", date);
 
-  const dueTodayData = useMemo(() => {
-    const dueTodayData = todos.filter((todoItem) => todoItem.datedue === date);
-    console.log("current", date);
-    return dueTodayData;
-  }, [todos]);
+  // const dueTodayData = useMemo(() => {
+  const dueTodayData = todos.filter((todoItem) => todoItem.datedue === date);
 
   const handleLogout = () => {
     fakeAuthService["isAuthenticated"] = false;
     setFakeAuthService({ ...fakeAuthService, isAuthenticated: false });
     setAuth(true);
 
-    console.log("logged out", !fakeAuthService.isAuthenticated);
     if (fakeAuthService.isAuthenticated) {
       return <Navigate to="/" replace={true} />;
     }
   };
 
   const SetDone = (todo) => {
-    console.log("todo this", todo);
     if (todo.completed === "completed") {
       setFormData({
         ...todo,
         completed: "pending",
       });
-      console.log("formdata after", formData);
     } else {
       setFormData({
         ...todo,
         completed: "completed",
       });
-      console.log("formdata after", formData);
     }
 
-    console.log(formData);
     axios
 
       .put("http://127.0.0.1:8000/todos/" + todo.id + "/", formData)
       .then((response) => {
-        console.log(response);
-        console.log("formdata", formData);
         api();
       })
       .catch((error) => {
-        console.log(error);
         api();
       });
   };
-
-  console.log("todos official", todos);
 
   return (
     <div className="position-relative">
@@ -478,7 +442,6 @@ const Homepage = (props) => {
                             ? true
                             : false
                         }
-                        // console.log('completed',todo.completed)
                         onChange={() => handleChecked(todo)}
                       />
                     </div>
@@ -530,7 +493,6 @@ const Homepage = (props) => {
                             ? true
                             : false
                         }
-                        // console.log('completed',todo.completed)
                         onChange={() => handleChecked(todo)}
                       />
                     </div>

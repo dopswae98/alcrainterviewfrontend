@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import { redirect, useNavigate } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { DataContext } from "../Components/TheContext";
 
@@ -16,31 +16,29 @@ const Login = () => {
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   };
-  const [isLoading] = useState(false);
-  console.log("fake auth service", fakeAuthService);
+
+  useEffect(() => {
+    setFakeAuthService({ ...fakeAuthService, isAuthenticated: false });
+  }, []);
+
+  const [isLoading, setIsLoading] = useState(false);
+
   // the working code for authentication from an api *****
   const handleLogin = (event) => {
     event.preventDefault();
-    console.log(formData);
-    console.log("fake auth service", fakeAuthService);
 
     axios
 
       .post("http://127.0.0.1:8000/api/login/", formData)
       .then((response) => {
-        console.log(response);
-        console.log("formdata", formData);
         setFakeAuthService({ ...fakeAuthService, isAuthenticated: true });
 
         setFeedback(true);
-        navigate("/home", { overwriteLastHistoryEntry: true });
+        // navigate("/home", { overwriteLastHistoryEntry: true });
+        navigate("/home");
         // redirect("/home");
-
-        console.log("login success");
-        console.log("fake auth service", fakeAuthService);
       })
       .catch((error) => {
-        console.log("error", error);
         setError(error);
         setFeedback(false);
       });

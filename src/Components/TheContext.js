@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -26,15 +26,6 @@ const DataContextProvider = ({ children }) => {
       setTimeout(callback, 100);
     },
   });
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setIsAuthenticated(true);
-    } else {
-      navigate("/");
-    }
-  }, [navigate]);
 
   const login = (token) => {
     localStorage.setItem("token", token);
