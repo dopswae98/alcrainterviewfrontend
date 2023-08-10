@@ -89,10 +89,8 @@ const Homepage = (props) => {
 
   useEffect(() => {
     api();
-
-    return () => {
-      getCurrentDateTime();
-    };
+    getCurrentDateTime();
+    
   }, [formData]);
 
   const getCurrentDateTime = () => {
